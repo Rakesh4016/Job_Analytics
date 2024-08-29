@@ -1,87 +1,76 @@
-# Job Scraping Project
+# Job Scraper
 
-This project is designed to scrape job postings from Dice.com, extract relevant job details, and store them in a PostgreSQL database. The project is modularized into separate components for web scraping, database operations, and WebDriver management.
+This project is a job scraper that collects all third party job details from Dice.com and stores as a dataframe >>CSV file and then loaded into PostgreSQL database. The scraper uses Selenium for web scraping and the psycopg2 library for database operations.
 
-## Project Structure
+## Table of Contents
+- [Installation](#installation)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Environment Variables](#environment-variables)
+- [Modules](#modules)
 
-- scraper.py: Contains functions to scrape job details from the web pages.
-- database.py: Manages database connections and insertion of job details.
-- driver_manager.py: Manages the WebDriver instance for Selenium.
-- main.py: The main entry point that orchestrates the entire scraping process.
+## Installation
 
-## Requirements
+1. Clone the repository
+   git clone <repository-url>
+   cd repository-directory
 
-- Python 3.7+
-- PostgreSQL
-- Google Chrome
-- ChromeDriver
-- Python libraries:
-  - selenium
-  - psycopg2
+2. Create a virtual environment
+   python -m venv venv
+   source venv/bin/activate  # On Windows use venv\Scripts\activate
 
-## Setup Instructions
-### 1. Install Python Libraries
+3. Install the required packages
+   pip install -r requirements.txt
 
-Install the required Python libraries using pip:
+4. Set up the environment variables
+   Create a .env file in the root directory of the project and add the following lines, replacing the placeholder values with your actual database credentials:
 
-pip install selenium psycopg2
+   DB_USER=your_username
+   DB_PASSWORD=your_password
+   DB_HOST=your_host
+   DB_PORT=your_port
+   DB_NAME=your_database_name
 
-### 2. Set Up PostgreSQL
-
-1. Install PostgreSQL from the official website.
-2. Create a database named `Job_Scraping`:
-
-CREATE DATABASE Job_Scraping;
-
-3. Create a table for storing job details:
-
-CREATE TABLE job_details (
-    id SERIAL PRIMARY KEY,
-    title TEXT,
-    location TEXT,
-    date_posted TEXT,
-    work_setting TEXT,
-    work_mode TEXT,
-    job_description TEXT,
-    position_id TEXT,
-    company_name TEXT,
-    company_url TEXT,
-    job_url TEXT,
-    data_scraped TIMESTAMP
-);
-
-### 3. Download ChromeDriver
-
-Download ChromeDriver from the official site and ensure it's in your system's PATH.
-
-### 4. Update Database Credentials
-
-Update the database credentials in `database.py`:
-
-# database.py
-connection = psycopg2.connect(
-    user="postgres",
-    password="your_password_here",
-    host="127.0.0.1",
-    port="5432",
-    database="Job_Scraping"
-)
-
-### 5. Running the Scraper
-
-Run the scraper using the following command:
-
-python main.py
+5. Download the ChromeDriver
+   Make sure you have the ChromeDriver installed and it's in your system's PATH.
 
 ## Usage
 
-1. The script will navigate to Dice.com, apply the "Today" filter for job postings, and scrape job details.
-2. The scraped job details will be inserted into the `job_details` table in the PostgreSQL database.
+To run the job scraper, use the following command:
 
-## Troubleshooting
+python main.py
 
-* Ensure ChromeDriver version matches your installed Google Chrome version.
-* Ensure PostgreSQL service is running.
-* Check database credentials if connection errors occur.
+## Project Structure
 
+.
+├── .env                # Environment variables
+├── database.py         # Database operations
+├── main.py             # Main script
+├── scraper.py          # Web scraping functions
+├── requirements.txt    # Python dependencies
+└── README.md           # Project documentation
+
+## Environment Variables
+
+The project requires a .env file in the root directory with the following variables:
+* DB_USER: PostgreSQL username
+* DB_PASSWORD: PostgreSQL password
+* DB_HOST: PostgreSQL host
+* DB_PORT: PostgreSQL port
+* DB_NAME: PostgreSQL database name
+
+## Modules
+
+database.py
+Contains functions for database operations:
+* get_db_connection(): Establishes a connection to the PostgreSQL database.
+* insert_job_details(job_details): Inserts job details into the job_details table.
+
+scraper.py
+Contains functions for web scraping:
+* restart_driver(): Initializes the Selenium WebDriver.
+* scrape_job_details(driver, wait): Scrapes job details from the job listing page.
+
+main.py
+Main script that orchestrates the scraping and database operations.
 
